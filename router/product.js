@@ -1,7 +1,5 @@
 import express from "express";
 import Product from "../model/product/index.js";
-import { allProduct } from "../server.js";
-import CartProduct from "../model/cartProduct/index.js";
 import { connection } from "../server.js";
 import util from "util";
 

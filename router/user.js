@@ -1,8 +1,4 @@
 import express, { query } from "express";
-import User from "../model/user/index.js";
-import { myCart } from "../server.js";
-import Cart from "../model/cart/index.js";
-import CartProduct from "../model/cartProduct/index.js";
 import { connection } from "../server.js";
 import util from "util";
 
@@ -20,14 +16,6 @@ router.get("/history", async (req, res) => {
       err: err.name,
       msg: "Database error",
     });
-  }
-});
-
-router.get("/logout", (req, res) => {
-  if (user.getNameLength() === 0) res.status(400).send("You haven't log in");
-  else {
-    user.name = "";
-    res.status(200).send("Log out successfully");
   }
 });
 

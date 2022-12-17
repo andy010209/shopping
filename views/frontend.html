@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shopping</title>
+</head>
+<body>
+    <h1>Welcome to the homepage</h1>
+    <button onclick="login()">login</button>
+    <button onclick="allProduct()">All product</button>
+    <button onclick="buy()">buy</button>
+    
+    <ul>
+        <li>123</li>
+        <li>456</li>
+        <li>789</li>
+    </ul>
+    <script>
+        function login(){
+            console.log("hi");
+            $.ajax({
+                url:"/data",
+                type:"GET"
+            })
+            .then(res=>{
+                alert("555");
+                console.log("2");
+                console.log(res);
+            })
+            .catch(err=>{
+                console.log(err);
+            });
+        }
+        function allProduct(){
+            console.log("all product:");
+            $.ajax({
+                url:"/product/all",
+                type:"GET"
+            })
+            .then(res=>{
+                console.log(res);
+            })
+            .catch(err=>{
+                console.log(err);
+            })
+        }
+    </script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+</body>
+</html>

@@ -1,11 +1,8 @@
 import express, { application, query } from "express";
 import Cart from "../model/cart/index.js";
-import User from "../model/user/index.js";
-import { allProduct, myCart } from "../server.js";
 import CartProduct from "../model/cartProduct/index.js";
 import { connection } from "../server.js";
 import util from "util";
-import { throws } from "assert";
 import Product from "../model/product/index.js";
 
 const router = express.Router();

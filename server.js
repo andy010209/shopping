@@ -3,30 +3,14 @@ import userRouter from "./router/user.js";
 import productRouter from "./router/product.js";
 import cartRouter from "./router/cart.js";
 import User from "./model/user/index.js";
-import Product from "./model/product/index.js";
 import Cart from "./model/cart/index.js";
-import CartProduct from "./model/cartProduct/index.js";
 import util from "util";
 import dotenv from "dotenv";
 import mysql from "mysql";
+import hbs from "hbs";
+import path from "path";
+import { fileURLToPath } from 'url';
 dotenv.config();
-
-////////////
-//改名稱駝峰
-//clean code
-//用class
-//104
-//寫前端
-//readme
-//github
-//leetcode
-//mark down
-////////////
-//全部都用oop
-//catch
-//正確回傳字串
-///////////
-//會員登入
 
 const app = express();
 const port = 1000;
@@ -40,6 +24,20 @@ export const connection = mysql.createConnection({
 });
 
 connection.connect();
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname=path.dirname(__filename);
+
+console.log(__dirname);
+console.log(path.join(__dirname,'frontend.html'))
+
+app.engine("html",hbs.__express);
+app.set("views",path.join(__dirname,"views"));
+app.use(express.static(path.join(__dirname,"shopping")));
+
+app.get("/",(req,res)=>{
+  res.render("frontend.html");
+})
 
 export let allProduct = [];
 export let myCart = new Cart(0);
@@ -73,6 +71,13 @@ app.post("/login", async (req, res) => {
       msg: "",
     });
   }
+});
+
+app.get("/data",(req,res)=>{
+  res.json({
+    name:"ej",
+    age:25
+  });
 });
 
 app.use("/user", userRouter);
