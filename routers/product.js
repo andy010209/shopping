@@ -1,5 +1,5 @@
 import express from "express";
-import Product from "../model/product/index.js";
+import Product from "../models/product/index.js";
 import { connection } from "../server.js";
 import util from "util";
 

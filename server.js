@@ -1,9 +1,9 @@
 import express from "express";
-import userRouter from "./router/user.js";
-import productRouter from "./router/product.js";
-import cartRouter from "./router/cart.js";
-import User from "./model/user/index.js";
-import Cart from "./model/cart/index.js";
+import userRouter from "./routers/user.js";
+import productRouter from "./routers/product.js";
+import cartRouter from "./routers/cart.js";
+import User from "./models/user/index.js";
+import Cart from "./models/cart/index.js";
 import util from "util";
 import dotenv from "dotenv";
 import mysql from "mysql";
@@ -43,7 +43,7 @@ app.use(
 );
 
 app.get("/", (req, res) => {
-  res.render("frontend.html");
+  res.render("homePage.html");
 });
 
 export let allProduct = [];

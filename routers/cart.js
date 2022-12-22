@@ -1,9 +1,9 @@
 import express, { application, query } from "express";
-import Cart from "../model/cart/index.js";
-import CartProduct from "../model/cartProduct/index.js";
+import Cart from "../models/cart/index.js";
+import CartProduct from "../models/cartProduct/index.js";
 import { connection } from "../server.js";
 import util from "util";
-import Product from "../model/product/index.js";
+import Product from "../models/product/index.js";
 import bodyParser from "body-parser";
 const router = express.Router();
 
