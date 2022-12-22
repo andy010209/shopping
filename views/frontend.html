@@ -1,52 +1,156 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Shopping</title>
-</head>
-<body>
+  </head>
+  <body>
     <h1>Welcome to the homepage</h1>
     <button onclick="login()">login</button>
-    <button onclick="allProduct()">All product</button>
-    <button onclick="buy()">buy</button>
-    
-    <ul>
-        <li>123</li>
-        <li>456</li>
-        <li>789</li>
-    </ul>
+    <div>
+      <button onclick="allProduct()">所有商品</button>
+    </div>
+    <div>
+      <form>
+        <label for="userID">userID</label>
+        <input type="number" name="userID" id="userID" /><br />
+      </form>
+      <form class="form">
+        <font color="blue" onclick="product(1) ">product1</font>
+        <label for="count">count</label>
+        <input type="number" name="count" id="count" />
+        <button type="submit">加入購物車</button>
+      </form>
+      <form class="form">
+        <font color="blue" onclick="product(2) ">product2</font>
+        <label for="count">count</label>
+        <input type="number" name="count" id="count" />
+        <button type="submit">加入購物車</button>
+      </form>
+      <form class="form">
+        <font color="blue" onclick="product(3) ">product3</font>
+        <label for="count">count</label>
+        <input type="number" name="count" id="count" />
+        <button type="submit">加入購物車</button>
+      </form>
+      <form class="form">
+        <font color="blue" onclick="product(4) ">product4</font>
+        <label for="count">count</label>
+        <input type="number" name="count" id="count" />
+        <button type="submit">加入購物車</button>
+      </form>
+      <form class="form">
+        <font color="blue" onclick="product(5) ">product5</font>
+        <label for="count">count</label>
+        <input type="number" name="count" id="count" />
+        <button type="submit">加入購物車</button>
+      </form>
+    </div>
+    <div>
+      <button onclick="cart()">cart</button>
+    </div>
+    <div class="buy">
+      <button type="click">buy</button>
+    </div>
+    <div class="history" id="historyList">
+      <button type="click">history</button>
+    </div>
     <script>
-        function login(){
-            console.log("hi");
-            $.ajax({
-                url:"/data",
-                type:"GET"
-            })
-            .then(res=>{
-                alert("555");
-                console.log("2");
-                console.log(res);
-            })
-            .catch(err=>{
-                console.log(err);
-            });
-        }
-        function allProduct(){
-            console.log("all product:");
-            $.ajax({
-                url:"/product/all",
-                type:"GET"
-            })
-            .then(res=>{
-                console.log(res);
-            })
-            .catch(err=>{
-                console.log(err);
-            })
-        }
+      //////////////////post模板
+      const formq = document.querySelector(".form");
+      const formu = document.getElementById("userID");
+      formq.addEventListener("submit", (event) => {
+        event.preventDefault();
+        const formData = new FormData(formq);
+        const data = Object.fromEntries(formData);
+
+        data.count = parseInt(data.count);
+        console.log(data);
+        const userID = formu.value;
+        console.log(userID);
+        data.userID = userID;
+        console.log(data);
+        // fetch("/cart", {
+        //   method: "POST",
+        //   headers: {
+        //     "Content-Type": "application/json",
+        //   },
+        //   body: JSON.stringify(data),
+        // });
+      });
+      ///////////////////
+      const his = document.querySelector(".history");
+      const list = document.getElementById("historyList");
+      const b = document.createElement("br");
+      his.addEventListener("click", (event) => {
+        event.preventDefault();
+        const hisData = {
+          userID: formu.value,
+        };
+        console.log(hisData);
+        $.ajax({
+          type: "POST",
+          url: "/user/history",
+          dataType: "html",
+          data: hisData,
+        })
+          .then((res) => {
+            console.log(res);
+            const nd = document.createElement("div");
+            const con = document.createTextNode(res);
+            nd.appendChild(con);
+            document.body.insertBefore(nd, list);
+          })
+          .catch({});
+      });
+      ///////////////////
+      const buy = document.querySelector(".buy");
+      buy.addEventListener("click", (event) => {
+        event.preventDefault();
+        const buyData = {
+          userID: formu.value,
+        };
+        console.log(buyData);
+        $.ajax({
+          type: "POST",
+          url: "/cart/total",
+          dataType: "html",
+          data: buyData,
+        })
+          .then((res) => {
+            console.log(res);
+          })
+          .catch({});
+      });
+      ///////////////////
+      function allProduct() {
+        console.log("all product:");
+        $.ajax({
+          url: "/product/all",
+          type: "GET",
+        })
+          .then((res) => {
+            console.log(res);
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+      }
+      function cart() {
+        $.ajax({
+          url: "/cart/current",
+          type: "GET",
+        })
+          .then((res) => {
+            console.log(res);
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+      }
     </script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
-</body>
+  </body>
 </html>

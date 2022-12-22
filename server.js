@@ -9,7 +9,8 @@ import dotenv from "dotenv";
 import mysql from "mysql";
 import hbs from "hbs";
 import path from "path";
-import { fileURLToPath } from 'url';
+import { fileURLToPath } from "url";
+import bodyParser from "body-parser";
 dotenv.config();
 
 const app = express();
@@ -26,18 +27,23 @@ export const connection = mysql.createConnection({
 connection.connect();
 
 const __filename = fileURLToPath(import.meta.url);
-const __dirname=path.dirname(__filename);
+const __dirname = path.dirname(__filename);
 
-console.log(__dirname);
-console.log(path.join(__dirname,'frontend.html'))
+app.engine("html", hbs.__express);
+app.set("views", path.join(__dirname, "views"));
+app.use(express.static(path.join(__dirname, "shopping")));
 
-app.engine("html",hbs.__express);
-app.set("views",path.join(__dirname,"views"));
-app.use(express.static(path.join(__dirname,"shopping")));
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded());
+app.use(
+  bodyParser.urlencoded({
+    extended: false,
+  })
+);
 
-app.get("/",(req,res)=>{
+app.get("/", (req, res) => {
   res.render("frontend.html");
-})
+});
 
 export let allProduct = [];
 export let myCart = new Cart(0);
@@ -52,9 +58,9 @@ app.post("/login", async (req, res) => {
     else {
       if (result.length === 0) {
         res.status(400).send({
-            err:"",
-            msg:"User not found"
-        })
+          err: "",
+          msg: "User not found",
+        });
       } else {
         let user = new User(
           result[0].userID,
@@ -73,10 +79,10 @@ app.post("/login", async (req, res) => {
   }
 });
 
-app.get("/data",(req,res)=>{
+app.get("/data", (req, res) => {
   res.json({
-    name:"ej",
-    age:25
+    name: "ej",
+    age: 25,
   });
 });
 

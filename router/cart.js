@@ -4,8 +4,13 @@ import CartProduct from "../model/cartProduct/index.js";
 import { connection } from "../server.js";
 import util from "util";
 import Product from "../model/product/index.js";
-
+import bodyParser from "body-parser";
 const router = express.Router();
+
+router.use(express.json());
+router.use(bodyParser.urlencoded({extended:false}));
+router.use(bodyParser.json());
+
 
 router.post("/", async (req, res) => {
   try {
@@ -15,6 +20,10 @@ router.post("/", async (req, res) => {
       req.body.productID,
       req.body.count
     );
+    console.log("this is /cart");
+    console.log(req.body);
+    console.log(req.body.productID);
+    console.log(r.getProductID());
     const sql = `SELECT * FROM shopping.product WHERE productID=${r.getProductID()}`;
     const check = await query(sql);
     if (check.err) throw err;
@@ -31,7 +40,7 @@ router.post("/", async (req, res) => {
         const sql1 = `SELECT * FROM shopping.cart WHERE userID=${r.getUserID()} and productID=${c.getProductID()}`;
         const prod = await query(sql1);
         if (prod.length === 0) {
-          const sql2 = `INSERT INTO shopping.cart(userID,productID,count) VALUES('${r.getUserID()}',${r.getProductID()},${r.getCount()})`;
+          const sql2 = `INSERT INTO shopping.cart(userID,productID,count,paid) VALUES('${r.getUserID()}',${r.getProductID()},${r.getCount()},'N')`;
           const result = await query(sql2);
           if (result.err) throw result.err;
           else res.status(200).send({ msg: "Cart insert success" });
@@ -53,7 +62,7 @@ router.post("/", async (req, res) => {
   } catch (error) {
     console.log(error);
     res.status(500).send({
-      err: err.name,
+      err: error.name,
       msg: "Database error",
     });
   }
@@ -83,7 +92,7 @@ router.get("/current", async (req, res) => {
   }
 });
 
-router.get("/total", async (req, res) => {
+router.post("/total", async (req, res) => {
   try {
     const query = util.promisify(connection.query).bind(connection);
     const sql = `SELECT userID,productID,count FROM shopping.cart WHERE userID=${req.body.userID} and paid='N' ORDER BY productID ASC`;
@@ -103,7 +112,7 @@ router.get("/total", async (req, res) => {
         );
         k++;
       }
-      console.log(his);
+      //console.log(his);
       let find = `SELECT cost FROM shopping.product WHERE `;
       let j = 0;
       while (1) {
@@ -112,9 +121,9 @@ router.get("/total", async (req, res) => {
         if (j < buy.length) find += ` or `;
         else break;
       }
-      console.log(find);
+      //console.log(find);
       const cost = await query(find);
-      console.log(cost);
+      //console.log(cost);
       let i = 0;
       let sql1 = `INSERT INTO shopping.history(userID,productID,count,total,date) VALUES`;
       while (1) {
