@@ -8,9 +8,8 @@ import bodyParser from "body-parser";
 const router = express.Router();
 
 router.use(express.json());
-router.use(bodyParser.urlencoded({extended:false}));
+router.use(bodyParser.urlencoded({ extended: false }));
 router.use(bodyParser.json());
-
 
 router.post("/", async (req, res) => {
   try {

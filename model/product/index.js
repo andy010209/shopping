@@ -1,5 +1,3 @@
-import express from "express";
-
 export default class Product {
   #productID;
   #count;
@@ -17,7 +15,7 @@ export default class Product {
   getCount() {
     return this.#count;
   }
-  getDetail(){
+  getDetail() {
     return this.#detail;
   }
   getCost() {

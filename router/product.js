@@ -46,10 +46,7 @@ router.get("/all", async (req, res) => {
   }
 });
 
-//全更新
 router.put("/", async (req, res) => {
-  //防呆...
-
   const query = util.promisify(connection.query).bind(connection);
   try {
     const r = new Product(
@@ -65,7 +62,6 @@ router.put("/", async (req, res) => {
     else {
       if (test.length === 0) {
         let sql = `INSERT INTO shopping.product(productID,count,detail,cost) VALUES(${r.getProductID()},${r.getCount()},'${r.getDetail()}',${r.getCost()})`;
-        //let sql = `INSERT INTO shopping.product(productID,count,detail,cost) VALUES(${p.getProductID()},${p.getCount()},'${p.getDetail()}',${p.getCost()})`
         try {
           const result = await query(sql);
           if (result.err) throw result.err;
@@ -79,7 +75,7 @@ router.put("/", async (req, res) => {
         }
       } else {
         let sql = `UPDATE shopping.product SET productID=${r.getProductID()},count=${r.getCount()},detail='${r.getDetail()}',cost=${r.getCost()} WHERE productID=${r.getProductID()}`;
-        //看要不要改
+        
         try {
           const result = await query(sql);
           if (result.err) throw result.err;
@@ -102,7 +98,6 @@ router.put("/", async (req, res) => {
   }
 });
 
-//部分更新
 router.patch("/", async (req, res) => {
   const query = util.promisify(connection.query).bind(connection);
   try {

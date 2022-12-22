@@ -1,11 +1,10 @@
-import express from "express";
 import CartProduct from "../cartProduct/index.js";
 export default class Cart {
   #cartCount;
   constructor() {
     this.#cartCount = [];
   }
-  getCartLength(){
+  getCartLength() {
     return this.#cartCount.length;
   }
   getCartCount() {
@@ -18,7 +17,13 @@ export default class Cart {
   setCartCount(product) {
     let i = 0;
     while (i < product.length) {
-      this.#cartCount.push(new CartProduct(product[i].userID,product[i].productID,product[i].count));
+      this.#cartCount.push(
+        new CartProduct(
+          product[i].userID,
+          product[i].productID,
+          product[i].count
+        )
+      );
       i++;
     }
   }

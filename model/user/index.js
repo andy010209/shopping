@@ -1,7 +1,3 @@
-import express from "express";
-import Cart from "../cart/index.js";
-import CartProduct from "../cartProduct/index.js";
-
 export default class User {
   #userID;
   #name;
@@ -49,10 +45,10 @@ export default class User {
       wallet: this.#wallet,
     };
   }
-  getName(){
+  getName() {
     return this.#name;
   }
-  getNameLength(){
+  getNameLength() {
     return this.#name.length;
   }
 }

@@ -11,6 +11,7 @@ import hbs from "hbs";
 import path from "path";
 import { fileURLToPath } from "url";
 import bodyParser from "body-parser";
+import jwt from "jsonwebtoken";
 dotenv.config();
 
 const app = express();
@@ -86,6 +87,17 @@ app.get("/data", (req, res) => {
   });
 });
 
+app.get("/test",(req,res)=>{
+  const t=req.header('Authorization').replace('Bearer','');
+  
+  console.log(t);
+  res.send("ok");
+})
+
+
+/////////////////////////////
+
+/////////////////////////////
 app.use("/user", userRouter);
 app.use("/product", productRouter);
 app.use("/cart", cartRouter);
