@@ -5,13 +5,14 @@ import { connection } from "../server.js";
 import util from "util";
 import Product from "../models/product/index.js";
 import bodyParser from "body-parser";
+import { verifier } from "../middleware/verifier.js";
 const router = express.Router();
 
 router.use(express.json());
 router.use(bodyParser.urlencoded({ extended: false }));
 router.use(bodyParser.json());
 
-router.post("/", async (req, res) => {
+router.post("/", verifier, async (req, res) => {
   try {
     const query = util.promisify(connection.query).bind(connection);
     const r = new CartProduct(
@@ -19,10 +20,6 @@ router.post("/", async (req, res) => {
       req.body.productID,
       req.body.count
     );
-    console.log("this is /cart");
-    console.log(req.body);
-    console.log(req.body.productID);
-    console.log(r.getProductID());
     const sql = `SELECT * FROM shopping.product WHERE productID=${r.getProductID()}`;
     const check = await query(sql);
     if (check.err) throw err;
@@ -67,7 +64,7 @@ router.post("/", async (req, res) => {
   }
 });
 
-router.get("/current", async (req, res) => {
+router.get("/current", verifier, async (req, res) => {
   try {
     const query = util.promisify(connection.query).bind(connection);
     const sql = `SELECT userID,productID,count FROM shopping.cart`;
@@ -91,7 +88,7 @@ router.get("/current", async (req, res) => {
   }
 });
 
-router.post("/total", async (req, res) => {
+router.post("/total", verifier, async (req, res) => {
   try {
     const query = util.promisify(connection.query).bind(connection);
     const sql = `SELECT userID,productID,count FROM shopping.cart WHERE userID=${req.body.userID} and paid='N' ORDER BY productID ASC`;
@@ -111,7 +108,6 @@ router.post("/total", async (req, res) => {
         );
         k++;
       }
-      //console.log(his);
       let find = `SELECT cost FROM shopping.product WHERE `;
       let j = 0;
       while (1) {
@@ -120,9 +116,7 @@ router.post("/total", async (req, res) => {
         if (j < buy.length) find += ` or `;
         else break;
       }
-      //console.log(find);
       const cost = await query(find);
-      //console.log(cost);
       let i = 0;
       let sql1 = `INSERT INTO shopping.history(userID,productID,count,total,date) VALUES`;
       while (1) {
