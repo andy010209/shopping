@@ -1,13 +1,12 @@
 import express from "express";
 import Product from "../models/product/index.js";
-import { connection } from "../server.js";
+import { connection , query } from "../server.js";
 import util from "util";
 
 const router = express.Router();
 
 router.get("/all", async (req, res) => {
   try {
-    const query = util.promisify(connection.query).bind(connection);
     const result = await query("SELECT * FROM shopping.product");
     if (result.err) throw result.err;
     else {
@@ -47,7 +46,6 @@ router.get("/all", async (req, res) => {
 });
 
 router.put("/", async (req, res) => {
-  const query = util.promisify(connection.query).bind(connection);
   try {
     const r = new Product(
       req.body.productID,
@@ -99,7 +97,6 @@ router.put("/", async (req, res) => {
 });
 
 router.patch("/", async (req, res) => {
-  const query = util.promisify(connection.query).bind(connection);
   try {
     const r = new Product(
       req.body.productID,

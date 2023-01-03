@@ -9,7 +9,7 @@
     <title>Shopping</title>
   </head>
   <body>
-    <h1>Welcome to the homepage</h1>
+    <h1>Welcome to my shopping page</h1>
     <button onclick="login()">login</button>
     <div>
       <button onclick="allProduct()">所有商品</button>
@@ -58,6 +58,19 @@
     </div>
     <div class="history" id="historyList">
       <button type="click">history</button>
+      <table border="1">
+        <thead>
+          <tr>
+              <th colspan="2">購物歷史紀錄</th>
+          </tr>
+          <td>使用者ID</td>
+          <td>產品ID</td>
+          <td>數量</td>
+          <td>總價</td>
+          <td>購買時間</td>
+        </thead>
+        <tbody></tbody>
+      </table>
     </div>
     <script>
       //////////////////post模板
@@ -100,10 +113,16 @@
         })
           .then((res) => {
             console.log(res);
-            const nd = document.createElement("div");
-            const con = document.createTextNode(res);
-            nd.appendChild(con);
-            document.body.insertBefore(nd, list);
+            let tbody=document.querySelector("tbody");
+            for(let i=0;i<res.length;i++){
+              let tr=document.createElement('tr');
+              tbody.appendChild(tr);
+              for(j=0;j<5;j++){
+                let td=document.createElement('td');
+                td.innerHTML=res[i]
+              }
+            }
+            document.body.insertBefore(table, list);
           })
           .catch({});
       });

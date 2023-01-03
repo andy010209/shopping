@@ -1,12 +1,11 @@
 import express from "express";
-import { connection } from "../server.js";
+import { connection , query} from "../server.js";
 import util from "util";
 import { verifier } from "../middleware/verifier.js";
 const router = express.Router();
 
-router.post("/history", verifier, async (req, res) => {
+router.post("/history", async (req, res) => {
   try {
-    const query = util.promisify(connection.query).bind(connection);
     const sql = `SELECT productID,count,total,date FROM shopping.history WHERE userID=${req.body.userID}`;
     const result = await query(sql);
     console.log(result);

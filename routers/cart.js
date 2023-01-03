@@ -1,4 +1,4 @@
-import express, { application, query } from "express";
+import express, { application } from "express";
 import Cart from "../models/cart/index.js";
 import CartProduct from "../models/cartProduct/index.js";
 import { connection } from "../server.js";
@@ -6,6 +6,7 @@ import util from "util";
 import Product from "../models/product/index.js";
 import bodyParser from "body-parser";
 import { verifier } from "../middleware/verifier.js";
+import { query } from "../server.js";
 const router = express.Router();
 
 router.use(express.json());
@@ -14,7 +15,6 @@ router.use(bodyParser.json());
 
 router.post("/", verifier, async (req, res) => {
   try {
-    const query = util.promisify(connection.query).bind(connection);
     const r = new CartProduct(
       req.body.userID,
       req.body.productID,
@@ -64,9 +64,24 @@ router.post("/", verifier, async (req, res) => {
   }
 });
 
+router.delete("/", verifier, async (req, res) => {
+  try {
+    const r = new CartProduct(req.body.userID, req.body.productID);
+    const sql = `DELETE FROM shopping.cart WHERE userID=${r.getUserID()} and productID=${r.getProductID()}`;
+    const result = await query(sql);
+    if (result.err) throw result.err;
+    else res.status(200).send(result);
+  } catch (error) {
+    console.log(err);
+    res.status(500).send({
+      err: err.name,
+      msg: "Database error",
+    });
+  }
+});
+
 router.get("/current", verifier, async (req, res) => {
   try {
-    const query = util.promisify(connection.query).bind(connection);
     const sql = `SELECT userID,productID,count FROM shopping.cart`;
     const cur = await query(sql);
     if (cur.err) throw cur.err;
@@ -90,7 +105,6 @@ router.get("/current", verifier, async (req, res) => {
 
 router.post("/total", verifier, async (req, res) => {
   try {
-    const query = util.promisify(connection.query).bind(connection);
     const sql = `SELECT userID,productID,count FROM shopping.cart WHERE userID=${req.body.userID} and paid='N' ORDER BY productID ASC`;
     const buy = await query(sql);
     console.log(buy);
