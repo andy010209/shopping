@@ -3,7 +3,7 @@ import passport from "passport";
 import cors from "cors";
 import cookieSession from "cookie-session";
 import "../passport.js";
-import {login} from "../middleware/verifier.js"
+import {createUser, login} from "../middleware/verifier.js"
 const router = express.Router();
 
 router.use(cors());
@@ -47,6 +47,8 @@ router.get("/logout", (req, res) => {
   req.logout();
   res.redirect("/");
 });
+
+router.post("/signin",createUser);
 
 router.post("/mylogin",login);
 

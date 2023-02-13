@@ -1,44 +1,53 @@
 import jwt from "jsonwebtoken";
-import { query } from "../server.js";
-
-export async function createUser(req,res,next){
-    try {
-        const sql=`SELECT * FROM shopping.userdata WHERE userName='${req.body.userName}'`;
-        const userData=await query(sql);
-        if(userData.err) throw userData.err;
-        else{
-            if(userData.length!=0) res.status(400).send();
-            else {
-                const createsql=`INSERT INTO shopping.userdata(userName,password) VALUE('${req.body.name}','${req.body.password}')`;
-                const result =await query(createsql);
-                if(result.err) throw result.err;
-                else{
-                    res.status(200).send({
-                        msg:"Create success!"
-                    });
-                }
-            }
+import { sqlUser } from "../server.js";
+export async function createUser(req, res, next) {
+  try {
+    const userData = await sqlUser.findAll({
+      where: {
+        userName: req.body.userName,
+      },
+    });
+    if (userData.err) throw userData.err;
+    else {
+      if (userData.length != 0) res.status(400).send({
+        msg: "User already exist"
+      });
+      else {
+        const randomID=Math.random()*1000;
+        const result = await sqlUser.create({
+          userID: randomID,
+          userName: req.body.userName,
+          password: req.body.password
+        })
+        if (result.err) throw result.err;
+        else {
+          res.status(200).send({
+            msg: "Create success!",
+          });
         }
-    } catch (error) {
-        console.log(error);
+      }
+    }
+  } catch (error) {
+    console.log(error);
     res.status(500).send({
       err: error.name,
       msg: "Database error",
     });
-    }
+  }
 }
 
 export async function login(req, res, next) {
   try {
-    const sql = `SELECT * FROM shopping.userdata WHERE userName='${req.body.userName}'`;
-    const userData = await query(sql);
+    const userData = await sqlUser.findAll({
+      where: {
+        userName: req.body.userName,
+      },
+    });
     if (userData.err) throw userData.err;
     else {
-      if (userData.length === 0)
-        res.status(400).send();
+      if (userData.length === 0) res.status(400).send();
       else {
-        if (req.body.password != userData[0].password)
-          res.status(400).send();
+        if (req.body.password != userData[0].password) res.status(400).send();
         else if (req.body.password === userData[0].password) {
           const payload = {
             userID: userData[0].userID,
@@ -68,8 +77,11 @@ export async function verifier(req, res, next) {
     const secret = "123";
     const token = req.header("Authorization").replace("Bearer ", "");
     const decode = jwt.verify(token, secret);
-    const sql = `SELECT * FROM shopping.userdata WHERE userID=${decode.userID}`;
-    const result = await query(sql);
+    const result=await sqlUser.findAll({
+      where: {
+        userID: decode.userID
+      }
+    })
     if (result.err) throw result.err;
     else {
       if (result.length === 0)
